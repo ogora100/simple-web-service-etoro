@@ -15,4 +15,3 @@ spec:
       containers:
       - name: simple-web
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-      namespace: omer

@@ -5,7 +5,6 @@
 replicaCount: 1
 
 image:
-  repository: acrinterview.azurecr.io
-  name: simple-web
+  repository: acrinterview.azurecr.io/simple-web
   tag: latest
   pullPolicy: IfNotPresent
