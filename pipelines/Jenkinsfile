@@ -1,10 +1,39 @@
 pipeline {
-  agent any
-  stages {
-    stage('Hello') {
-      steps {
-        echo 'Hello, World!'
-      }
+    agent any
+
+    stages {
+        stage('Clone Repository') {
+            steps {
+                git 'https://github.com/ogora100/simple-web-service-etoro.git'
+            }
+        }
+        stage('Connect to AKS Cluster') {
+            steps {
+                script {
+                    // Replace <AKS_CLUSTER_NAME> and <AKS_RESOURCE_GROUP> with the actual
+                    // values for your cluster
+                    az aks get-credentials -n devops-interview-aks -g  devops-interview-rg
+                    az account show
+                }
+            }
+        }
+        stage('Deploy or Destroy Helm Chart') {
+            steps {
+                script {
+                    // Set the release name and namespace
+                    def releaseName = 'my-release'
+                    def namespace = 'default'
+
+                    // Check if the user specified the 'DEPLOY' parameter
+                    if (params.DEPLOY == 'true') {
+                        // Deploy the Helm chart
+                        sh "helm upgrade --install $releaseName ./chart --namespace $namespace"
+                    } else {
+                        // Destroy the Helm chart
+                        sh "helm uninstall $releaseName --namespace $namespace"
+                    }
+                }
+            }
+        }
     }
-  }
 }
