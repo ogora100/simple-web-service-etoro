@@ -4,10 +4,10 @@ metadata:
   name: simple-web-ingress
 spec:
   rules:
-  - host: simple-web.yourdomain.com
+  - host: myapp.example.com
     http:
       paths:
-      - path: /
+      - path: /omer
         backend:
           serviceName: simple-web-service
           servicePort: 80
