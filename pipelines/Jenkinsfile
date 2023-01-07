@@ -1,7 +1,7 @@
 pipeline {
     agent any
     parameters {
-        choice(choices: ['Deploy', 'Destroy'], description: 'choose deploy to install the chart, or Destroy to uninstall it', name: 'Action')
+        choice(choices: ['Deploy', 'Destroy'], description: 'choose deploy to install the chart, or Destroy to uninstall the chart', name: 'Action')
     }
     stages {
         stage('Clone Repository') {
@@ -9,19 +9,12 @@ pipeline {
                 git url: "https://github.com/ogora100/simple-web-service-etoro.git", branch: "main"
             }
         }
-        stage('Connect to AKS Cluster') {
+        stage('Connect to Azure subscription') {
             steps {
                 script {
-                    // Replace <AKS_CLUSTER_NAME> and <AKS_RESOURCE_GROUP> with the actual
-                    // values for your cluster
-                    echo "omer"
                     sh """
-                    az login -i 
-                    az aks get-credentials -n devops-interview-aks -g  devops-interview-rg
-                    export KUBECONFIG=/var/lib/jenkins/.kube/config
-                    kubelogin convert-kubeconfig -l msi
-                    kubectl get nodes
-
+		    // /var/lib/jenkins/.kube/config is in place already, just connect to Azure subscription
+                    az login -i
                     """
                 }
             }
@@ -34,12 +27,14 @@ pipeline {
                     def namespace = 'default'
 
                     // Check if the user specified the 'DEPLOY' parameter
-                    if (params.DEPLOY == 'true') {
+                    if (params.Action == "Deploy") {
                         // Deploy the Helm chart
-                        sh "helm upgrade --install $releaseName ./chart --namespace $namespace"
+                        sh """
+			helm install simple-web-chart  simple-web-chart --namespace omer
+			"""
                     } else {
                         // Destroy the Helm chart
-                        sh "helm uninstall $releaseName --namespace $namespace"
+                        sh "helm uninstall simple-web-chart  simple-web-chart --namespace omer"
                     }
                 }
             }
