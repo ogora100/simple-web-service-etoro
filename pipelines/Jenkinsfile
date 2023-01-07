@@ -1,6 +1,8 @@
 pipeline {
     agent any
-
+    parameters {
+        choice(choices: ['Deploy', 'Destroy'], description: 'choose deploy to install the chart, or Destroy to uninstall it', name: 'Action')
+    }
     stages {
         stage('Clone Repository') {
             steps {
@@ -13,8 +15,14 @@ pipeline {
                     // Replace <AKS_CLUSTER_NAME> and <AKS_RESOURCE_GROUP> with the actual
                     // values for your cluster
                     echo "omer"
+                    sh """
+                    az login -i 
                     az aks get-credentials -n devops-interview-aks -g  devops-interview-rg
-                    az account show
+                    export KUBECONFIG=/var/lib/jenkins/.kube/config
+                    kubelogin convert-kubeconfig -l msi
+                    kubectl get nodes
+
+                    """
                 }
             }
         }
@@ -38,3 +46,4 @@ pipeline {
         }
     }
 }
+
