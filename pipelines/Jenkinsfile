@@ -1,0 +1,12 @@
+pipeline {
+  agent {
+    label 'my-label'
+  }
+  stages {
+    stage('Hello') {
+      steps {
+        echo 'Hello, World!'
+      }
+    }
+  }
+}
