@@ -12,6 +12,7 @@ pipeline {
                 script {
                     // Replace <AKS_CLUSTER_NAME> and <AKS_RESOURCE_GROUP> with the actual
                     // values for your cluster
+                    echo "omer"
                     az aks get-credentials -n devops-interview-aks -g  devops-interview-rg
                     az account show
                 }
