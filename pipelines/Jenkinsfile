@@ -43,7 +43,7 @@ pipeline {
                     def namespace = 'default'
 
                     // Check if the user specified the 'DEPLOY' parameter
-                    if (params.Action == "Deploy") {
+                    if (params.ACTION == "Deploy") {
                         // Deploy the Helm chart
                         sh """
                         helm install simple-web-chart  simple-web-chart --namespace omer
