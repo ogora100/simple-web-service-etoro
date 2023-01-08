@@ -44,6 +44,25 @@ pipeline {
                 }
             }
         }
+        stage('Verify Chart Uninstalled') {
+            when {
+                expression { params.ACTION == 'Destroy' }
+            }
+            steps {
+                script {
+                    // Verify if the chart is already installed
+                    def CHARTINSTALLED = sh(script: "helm ls -n omer  | tail -n +2 | wc -l", returnStdout: true).trim()
+                    if ("${CHARTINSTALLED}" >= 0) {
+                        echo "Chart already uninstalled, nothin to do."
+                        error("Chart already uninstalled, nothin to do.")
+                    } else {
+                        echo "Chart exists, proceed to uninstall chart."
+                        
+                    }
+                    
+                }
+            }
+        }
         stage('Connect to Azure subscription') {
             steps {
                 script {
@@ -76,6 +95,7 @@ pipeline {
         }
     }
 }
+
 
 
 
