@@ -16,7 +16,7 @@ pipeline {
             steps {
                 script {
                     currentBuild.displayName = "${BUILD_NUMBER}"
-                    currentBuild.description = "${Action_string}"
+                    currentBuild.description = "Selected action: ${Action_string}"
                 }
             }
         }
