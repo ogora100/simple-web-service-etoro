@@ -50,11 +50,12 @@ pipeline {
                         """
                     } else {
                         // Destroy the Helm chart
-                        sh "helm uninstall simple-web-chart  simple-web-chart --namespace omer"
+                        sh "helm uninstall simple-web-chart  --namespace omer"
                     }
                 }
             }
         }
     }
 }
+
 
