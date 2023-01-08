@@ -63,16 +63,6 @@ pipeline {
                 }
             }
         }
-        stage('Connect to Azure subscription') {
-            steps {
-                script {
-                    // /var/lib/jenkins/.kube/config is in place already, just connect to Azure subscription
-                    sh """
-                    az login -i
-                    """
-                }
-            }
-        }
         stage('Deploy or Destroy Helm Chart') {
             steps {
                 script {
