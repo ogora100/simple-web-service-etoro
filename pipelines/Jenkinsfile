@@ -1,9 +1,25 @@
 pipeline {
     agent any
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '30', daysToKeepStr: '30', artifactDaysToKeepStr: '2', artifactNumToKeepStr: '2'))
+        timestamps()
+    }
     parameters {
-        choice(choices: ['Deploy', 'Destroy'], description: 'choose deploy to install the chart, or Destroy to uninstall the chart', name: 'Action')
+        choice(choices: ['Deploy', 'Destroy'], description: 'choose deploy to install the chart, or Destroy to uninstall the chart', name: 'ACTION')
+    }
+    environment {
+        Action_string = "${ACTION}".toString()
+        
     }
     stages {
+        stage('Set build description') {
+            steps {
+                script {
+                    currentBuild.displayName = "${BUILD_NUMBER}"
+                    currentBuild.description = "${Action_string}"
+                }
+            }
+        }
         stage('Clone Repository') {
             steps {
                 git url: "https://github.com/ogora100/simple-web-service-etoro.git", branch: "main"
@@ -30,8 +46,8 @@ pipeline {
                     if (params.Action == "Deploy") {
                         // Deploy the Helm chart
                         sh """
-			helm install simple-web-chart  simple-web-chart --namespace omer
-			"""
+                        helm install simple-web-chart  simple-web-chart --namespace omer
+                        """
                     } else {
                         // Destroy the Helm chart
                         sh "helm uninstall simple-web-chart  simple-web-chart --namespace omer"
@@ -41,4 +57,3 @@ pipeline {
         }
     }
 }
-
