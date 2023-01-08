@@ -9,6 +9,8 @@ pipeline {
     }
     environment {
         Action_string = "${ACTION}".toString()
+        namespace     = "omer"
+        release_name  = "simple-web-chart"
         
     }
     stages {
@@ -32,7 +34,7 @@ pipeline {
             steps {
                 script {
                     // Verify if the chart is already installed
-                    def CHARTINSTALLED = sh(script: "helm ls -n omer  | tail -n +2 | wc -l", returnStdout: true).trim()
+                    def CHARTINSTALLED = sh(script: "helm ls -n ${namespace}  | tail -n +2 | wc -l", returnStdout: true).trim()
                     if ("${CHARTINSTALLED}" >= 1) {
                         echo "Chart already installed, nothin to do."
                         error("Chart already installed, nothin to do.")
@@ -51,7 +53,7 @@ pipeline {
             steps {
                 script {
                     // Verify if the chart is already installed
-                    def CHARTINSTALLED = sh(script: "helm ls -n omer  | tail -n +2 | wc -l", returnStdout: true).trim()
+                    def CHARTINSTALLED = sh(script: "helm ls -n ${namespace}  | tail -n +2 | wc -l", returnStdout: true).trim()
                     if ("${CHARTINSTALLED}" <= 0) {
                         echo "Chart already uninstalled, nothin to do."
                         error("Chart already uninstalled, nothin to do.")
@@ -66,25 +68,20 @@ pipeline {
         stage('Deploy or Destroy Helm Chart') {
             steps {
                 script {
-                    // Set the release name and namespace
-                    def releaseName = 'my-release'
-                    def namespace = 'default'
-
                     // Check if the user specified the 'DEPLOY' parameter
                     if (params.ACTION == "Deploy") {
                         // Deploy the Helm chart
-                        sh """
-                        helm install simple-web-chart  simple-web-chart --namespace omer
-                        """
+                        sh "helm install ${release_name}  ${release_name} --namespace ${namespace}"
                     } else {
                         // Destroy the Helm chart
-                        sh "helm uninstall simple-web-chart  --namespace omer"
+                        sh "helm uninstall ${release_name}  --namespace ${namespace}"
                     }
                 }
             }
         }
     }
 }
+
 
 
 
