@@ -26,6 +26,9 @@ pipeline {
             }
         }
         stage('Verify Chart Installation') {
+            when {
+                expression { params.ACTION == 'Deploy' }
+            }
             steps {
                 script {
                     // Verify if the chart is already installed
@@ -73,6 +76,7 @@ pipeline {
         }
     }
 }
+
 
 
 
