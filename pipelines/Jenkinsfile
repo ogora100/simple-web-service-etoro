@@ -25,6 +25,22 @@ pipeline {
                 git url: "https://github.com/ogora100/simple-web-service-etoro.git", branch: "main"
             }
         }
+        stage('Verify Chart Installation') {
+            steps {
+                script {
+                    // Verify if the chart is already installed
+                    def CHARTINSTALLED = sh(script: "helm ls -n omer  | tail -n +2 | wc -l", returnStdout: true).trim()
+                    if ("${CHARTINSTALLED}" >= 1) {
+                        echo "Chart already installed, nothin to do."
+                        error("Chart already installed, nothin to do.")
+                    } else {
+                        echo "Chart isn't installed, proceed to install chart."
+                        
+                    }
+                    
+                }
+            }
+        }
         stage('Connect to Azure subscription') {
             steps {
                 script {
@@ -57,5 +73,6 @@ pipeline {
         }
     }
 }
+
 
 
